@@ -61,11 +61,20 @@ public class Functions {
             case "C"-> bias = 26;
             case "D"-> bias = 38;
         }
+
+        int price = 0;
+
+        switch (seat) {
+            case 1,2,3,4,5 -> price = 200;
+            case 6,7,8,9 -> price = 150;
+            case 10,11,12,13,14 -> price = 180;
+        }
         Ticket ticket = new Ticket();
         ticket.setSeat(seat);
         ticket.setRow(row);
         ticket.setId(seat + bias);
         ticket.setPerson(person);
+        ticket.setPrice(price);
         return ticket;
     }
 
@@ -153,7 +162,7 @@ public class Functions {
         int seatRow = seatRowIndex(row);
         Scanner input2 = new Scanner(System.in);
 
-        System.out.println("Enter the SEAT NUMBER of the seat you would like to purchase: ");
+        System.out.println("Enter the SEAT NUMBER of the seat you would like to cancel: ");
         while (true) {
             if (input2.hasNextInt()) {
                 seatNumber = input2.nextInt();
@@ -180,7 +189,7 @@ public class Functions {
 
         if(seats.getSeat(seatRow,seatNumber) == 1){
 
-            ticket[bias - 1] = null;
+            ticket[seatNumber + bias - 1] = null;
 
             seats.deleteSeat(seatRow, seatNumber);
 
@@ -197,12 +206,14 @@ public class Functions {
 
     public void findFirstAvailableSeat(){
         int[] seatNumbers = seats.findFirstAvailableSeat();
-        System.out.println("The first available seat is " + seatRowIndexInverse(seatNumbers[0]) + " " + seatNumbers[1]);
+        System.out.println("The first available seat is " + seatRowIndexInverse(seatNumbers[0]) + " " + (seatNumbers[1] +1));
     }
 
     public void printTickets(Ticket[] tickets){
         for (Ticket ticket : tickets) {
-            System.out.println(ticket.toString());
+            if (ticket != null) {
+                System.out.println(ticket);
+            }
         }
     }
 
@@ -249,11 +260,14 @@ public class Functions {
         }
 
         boolean found = false;
-        for(Ticket tickets: ticket){
-            System.out.println("Ticket Found: " + tickets);
-            found = true;
-            break;
+        for (Ticket t : ticket) {
+            if (t != null && t.getRow().equalsIgnoreCase(String.valueOf(row)) && t.getSeat() == seatNumber) {
+                System.out.println("Ticket Found: " + t);
+                found = true;
+                break;
+            }
         }
+
         if(!found){
             System.out.println("Ticket not found for seat" + seatRowIndexInverse(seatRow) + " " + seatNumber);
         }
